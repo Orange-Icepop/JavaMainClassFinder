@@ -6,8 +6,35 @@ namespace JavaMainClassFinder
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter the path of the directory: ");
-            string? path = Console.ReadLine();
+            string? path = null;
+            if (args != null && args.Length > 0)
+            {
+                foreach (string arg in args)
+                {
+                    if (arg == "-h" || arg == "--help")
+                    {
+                        Console.WriteLine("Usage: JavaMainClassFinder.exe -d(or --directory) [directory]");
+                        Console.WriteLine("Or, you can enter the directory after running the program.");
+                        return;
+                    }
+                    else if (arg.StartsWith("-d") || arg.StartsWith("--directory"))
+                    {
+                        path = args[1];
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid argument: " + arg);
+                        Console.WriteLine("Please use -h or --help for help.");
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Enter the path of the directory: ");
+                path = Console.ReadLine();
+            }
             if (string.IsNullOrEmpty(path))
             {
                 Console.WriteLine("please enter a valid path");
