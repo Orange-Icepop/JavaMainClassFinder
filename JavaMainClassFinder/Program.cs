@@ -66,7 +66,7 @@ namespace JavaMainClassFinder
                 string result = string.Join(Environment.NewLine, dict.Select(kvp => $"{kvp.Key}:{kvp.Value}"));
                 File.WriteAllText("result.txt", result);
                 Console.WriteLine("Results saved to result.txt");
-                string csv = string.Join(Environment.NewLine, dict.Select(kvp => $"{kvp.Key}, {kvp.Value}"));
+                string csv = string.Join(Environment.NewLine, dict.Select(kvp => $"{kvp.Key},{kvp.Value}"));
                 File.WriteAllText("result.csv", csv);
                 Console.WriteLine("Results saved to result.csv");
 
