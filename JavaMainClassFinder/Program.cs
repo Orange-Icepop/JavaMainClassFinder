@@ -1,11 +1,15 @@
-﻿using System;
-using System.IO.Compression;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using System;
 namespace JavaMainClassFinder
 {
     internal class Program
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Java Main Class Finder");
+            Console.WriteLine("Made by Orange-Icepop");
+            Console.WriteLine("Version 1.1");
+            Console.WriteLine("Uses SharpZipLib, https://github.com/icsharpcode/SharpZipLib, MIT License");
             string? path = null;
             if (args != null && args.Length > 0)
             {
@@ -80,13 +84,23 @@ namespace JavaMainClassFinder
             try
             {
                 using FileStream stream = new FileStream(jarFilePath, FileMode.Open);
-                using ZipArchive archive = new ZipArchive(stream, ZipArchiveMode.Read);
-                ZipArchiveEntry? manifestEntry = archive.Entries.FirstOrDefault(entry => entry.FullName == "META-INF/MANIFEST.MF");
-                if (manifestEntry != null)
+                using (ZipFile zipFile = new ZipFile(stream))
                 {
-                    using StreamReader reader = new StreamReader(manifestEntry.Open());
-                    string manifestContent = reader.ReadToEnd();
-                    return FindMainClassLine(manifestContent);
+                    foreach (ZipEntry entry in zipFile)
+                    {
+                        if (entry.IsDirectory)
+                            continue;
+
+                        if (entry.Name == "META-INF/MANIFEST.MF")
+                        {
+                            using (var fstream = zipFile.GetInputStream(entry))
+                            using (StreamReader reader = new StreamReader(fstream))
+                            {
+                                string manifestContent = reader.ReadToEnd();
+                                return FindMainClassLine(manifestContent);
+                            }
+                        }
+                    }
                 }
                 return null;
             }
